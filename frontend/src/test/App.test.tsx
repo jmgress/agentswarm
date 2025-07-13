@@ -40,4 +40,11 @@ describe('App', () => {
     render(<App />)
     expect(screen.getByRole('button', { name: /count is 0/i })).toBeInTheDocument()
   })
+
+  it('renders agent creation form', () => {
+    vi.mocked(globalThis.fetch).mockRejectedValue(new Error('Network error'))
+    render(<App />)
+    expect(screen.getByText('Create Agent')).toBeInTheDocument()
+    expect(screen.getByTestId('agent-form')).toBeInTheDocument()
+  })
 })
