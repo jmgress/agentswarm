@@ -1,4 +1,4 @@
-import { Agent } from './AgentForm'
+import type { Agent } from './AgentForm'
 import './AgentList.css'
 
 interface AgentListProps {

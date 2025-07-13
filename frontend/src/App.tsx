@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { AgentForm, AgentFormData, Agent } from './AgentForm'
+import { AgentForm, type AgentFormData, type Agent } from './AgentForm'
 import { AgentList } from './AgentList'
 
 interface HealthStatus {

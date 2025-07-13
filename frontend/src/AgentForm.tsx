@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import './AgentForm.css'
 
 export interface MCPConnectionInfo {
   endpoint_url: string
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 export interface AgentFormData {
@@ -36,7 +36,7 @@ export function AgentForm({ onSubmit, isLoading }: AgentFormProps) {
 
   const [metadataText, setMetadataText] = useState('')
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     
     // Parse metadata if provided
