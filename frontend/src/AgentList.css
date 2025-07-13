@@ -1,0 +1,117 @@
+.agent-list-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.agent-list-container h2 {
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.loading, .empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-style: italic;
+}
+
+.agent-list {
+  display: grid;
+  gap: 16px;
+}
+
+.agent-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s;
+}
+
+.agent-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.agent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.agent-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.agent-type {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.agent-type.utility {
+  background: #e7f3ff;
+  color: #0066cc;
+}
+
+.agent-type.task {
+  background: #f0f9e7;
+  color: #4d7c0f;
+}
+
+.agent-type.orchestration {
+  background: #fef3e7;
+  color: #c2410c;
+}
+
+.agent-description {
+  color: #666;
+  margin: 12px 0;
+  line-height: 1.5;
+}
+
+.agent-mcp {
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 12px 0;
+  font-size: 14px;
+}
+
+.agent-mcp strong {
+  color: #333;
+}
+
+.metadata-details {
+  margin-top: 8px;
+}
+
+.metadata-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #555;
+}
+
+.metadata-details pre {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 8px;
+  font-size: 12px;
+  overflow-x: auto;
+}
+
+.agent-created {
+  color: #999;
+  font-size: 12px;
+  text-align: right;
+  margin-top: 12px;
+}
