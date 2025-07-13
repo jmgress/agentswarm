@@ -1,0 +1,24 @@
+{
+  "name": "agentswarm",
+  "version": "1.0.0",
+  "description": "Generative AI system to build an agent swarm for task and problem solving",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "bash -c 'cd backend && python3 -m venv venv 2>/dev/null || true && source venv/bin/activate && pip install -r requirements.txt > /dev/null && python main.py'",
+    "start:frontend": "bash -c 'cd frontend && npm install > /dev/null && npm run dev'",
+    "setup": "npm run setup:backend && npm run setup:frontend",
+    "setup:backend": "bash -c 'cd backend && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt'",
+    "setup:frontend": "cd frontend && npm install",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "bash -c 'cd backend && (test -d venv || (python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt)) && source venv/bin/activate && python -m pytest tests/ -v'",
+    "test:frontend": "cd frontend && npm run test"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "python": ">=3.8.0"
+  }
+}

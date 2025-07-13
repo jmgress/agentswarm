@@ -4,17 +4,63 @@ Generative AI system to build an agent swarm for task and problem solving.
 
 This is a full-stack application with a FastAPI backend and React frontend.
 
+## Quick Start
+
+### Easy Start (Recommended)
+```bash
+# Clone the repository
+git clone https://github.com/jmgress/agentswarm.git
+cd agentswarm
+
+# Start both backend and frontend (with automatic setup)
+npm start
+# or
+./start.sh
+```
+
+### Run Tests
+```bash
+# Run all tests
+npm test
+# or
+./test.sh
+
+# Run tests individually  
+npm run test:backend
+npm run test:frontend
+```
+
+## Available Scripts
+
+### Root Level Commands
+- `npm start` - Start both backend and frontend services concurrently
+- `npm test` - Run all tests (backend + frontend)
+- `npm run setup` - Install all dependencies for both services
+- `npm run start:backend` - Start only the backend server
+- `npm run start:frontend` - Start only the frontend server
+- `npm run test:backend` - Run only backend tests
+- `npm run test:frontend` - Run only frontend tests
+
+### Shell Scripts
+- `./start.sh` - Interactive startup with dependency checking and installation
+- `./test.sh` - Run tests with detailed output and summary
+
 ## Project Structure
 
 ```
 agentswarm/
 ├── backend/          # FastAPI backend application
 │   ├── main.py       # Main FastAPI application with health endpoint
-│   └── requirements.txt # Python dependencies
+│   ├── requirements.txt # Python dependencies
+│   └── tests/        # Backend tests (pytest)
 ├── frontend/         # React frontend application
 │   ├── src/          # React source code
+│   │   └── test/     # Frontend tests (vitest)
 │   ├── public/       # Static assets
 │   └── package.json  # Node.js dependencies
+├── package.json      # Root package.json with coordinated scripts
+├── start.sh          # Enhanced startup script
+├── test.sh           # Enhanced testing script
 └── README.md         # This file
 ```
 
@@ -24,7 +70,7 @@ agentswarm/
 - Node.js 16+
 - npm or yarn
 
-## Getting Started
+## Manual Setup (if needed)
 
 ### Backend (FastAPI)
 
@@ -89,6 +135,31 @@ The backend will start on `http://localhost:8000`
 
 The frontend will start on `http://localhost:5173`
 
+## Testing
+
+### Backend Tests
+- **Framework**: pytest
+- **Coverage**: FastAPI application setup and health endpoint
+- **Command**: `npm run test:backend` or `cd backend && python -m pytest tests/ -v`
+
+### Frontend Tests  
+- **Framework**: vitest with @testing-library/react
+- **Coverage**: React component rendering and functionality
+- **Command**: `npm run test:frontend` or `cd frontend && npm test`
+
+### Test Examples
+```bash
+# Quick test run
+npm test
+
+# Detailed test output with setup
+./test.sh
+
+# Individual service tests
+npm run test:backend
+npm run test:frontend
+```
+
 ## Features
 
 ### Backend
@@ -96,12 +167,14 @@ The frontend will start on `http://localhost:5173`
 - ✅ `/health` endpoint that returns `{"status": "ok"}`
 - ✅ CORS enabled for frontend communication
 - ✅ Auto-generated API documentation
+- ✅ pytest test suite with health endpoint testing
 
 ### Frontend
 - ✅ React application built with Vite and TypeScript
 - ✅ Health check integration with backend
 - ✅ Real-time status display
 - ✅ Error handling for backend connectivity issues
+- ✅ vitest test suite with component testing
 
 ## Development
 
@@ -124,8 +197,12 @@ Both the backend and frontend can be run independently:
 - FastAPI - Modern, fast web framework for building APIs
 - Uvicorn - ASGI server for running FastAPI
 - CORS middleware for cross-origin requests
+- pytest - Testing framework
+- httpx - HTTP client for testing
 
 ### Frontend
 - React 18 - UI library
 - TypeScript - Type-safe JavaScript
 - Vite - Fast build tool and development server
+- vitest - Testing framework
+- @testing-library/react - React testing utilities
