@@ -1,0 +1,26 @@
+{
+  "name": "agentswarm",
+  "version": "1.0.0",
+  "description": "Generative AI system to build an agent swarm for task and problem solving",
+  "private": true,
+  "scripts": {
+    "start": "scripts/start-app.sh",
+    "start:direct": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:safe": "scripts/start-app.sh",
+    "start:backend": "bash -c 'scripts/check-port.sh 8000 \"FastAPI Backend\" && source .venv/bin/activate && cd backend && python main.py'",
+    "start:frontend": "bash -c 'scripts/check-port.sh 5173 \"Vite Frontend\" && cd frontend && npm install > /dev/null && npm run dev'",
+    "setup": "npm run setup:backend && npm run setup:frontend",
+    "setup:backend": "bash -c 'source .venv/bin/activate && pip install -r backend/requirements.txt'",
+    "setup:frontend": "cd frontend && npm install",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "bash -c 'source .venv/bin/activate && python -m pytest backend/tests/ --tb=short'",
+    "test:frontend": "cd frontend && npm run test"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "python": ">=3.8.0"
+  }
+}
