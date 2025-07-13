@@ -111,6 +111,16 @@ Both the backend and frontend can be run independently:
 2. **Frontend only**: The React app will show connection errors if the backend is not running
 3. **Full stack**: Start both servers to test the complete application
 
+   ```bash
+   ./scripts/start.sh
+   ```
+
+4. **Run tests**:
+
+   ```bash
+   ./scripts/test.sh
+   ```
+
 ## API Endpoints
 
 ### Health Check
