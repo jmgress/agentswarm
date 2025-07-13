@@ -9,18 +9,26 @@ if [ ! -f "package.json" ]; then
     exit 1
 fi
 
-# Setup backend testing if needed
+# Setup backend testing using existing .venv
 echo "🐍 Setting up backend tests..."
-if [ ! -d "venv" ]; then
-    echo "Creating Python virtual environment..."
-    python3 -m venv venv
+if [ ! -d ".venv" ]; then
+    echo "❌ Error: .venv virtual environment not found. Run setup first."
+    echo "To create it: python3 -m venv .venv && source .venv/bin/activate && pip install -r backend/requirements.txt"
+    exit 1
 fi
 
-source venv/bin/activate
-pip install -r backend/requirements.txt > /dev/null
+# Use the existing .venv instead of creating venv
+source .venv/bin/activate
+
+# Check if requirements are installed
+echo "Checking backend dependencies..."
+if ! python -c "import fastapi" 2>/dev/null; then
+    echo "Installing backend requirements..."
+    pip install -r backend/requirements.txt > /dev/null
+fi
 
 echo "Running backend tests..."
-python -m pytest backend/tests/ -v
+python -m pytest backend/tests/ --tb=short
 backend_result=$?
 
 # Setup frontend testing if needed  
