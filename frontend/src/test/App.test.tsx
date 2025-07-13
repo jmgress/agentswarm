@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, act } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import App from '../App'
 
@@ -11,33 +11,41 @@ describe('App', () => {
     vi.resetAllMocks()
   })
 
-  it('renders without crashing', () => {
+  it('renders without crashing', async () => {
     // Mock a failing fetch to avoid loading state
     vi.mocked(globalThis.fetch).mockRejectedValue(new Error('Network error'))
-    render(<App />)
-    expect(screen.getByText('AgentSwarm - Frontend')).toBeInTheDocument()
+    
+    await act(async () => {
+      render(<App />)
+    })
+    
+    expect(screen.getByText('AgentSwarm')).toBeInTheDocument()
   })
 
-  it('displays health check section', async () => {
-    // Mock a successful fetch response
+  it('displays agent creation form', async () => {
+    // Mock a successful fetch response for agents
     vi.mocked(globalThis.fetch).mockResolvedValue({
       ok: true,
-      json: async () => ({ status: 'ok' })
+      json: async () => ([])
     } as Response)
 
-    render(<App />)
-    expect(screen.getByText('Backend Health Status')).toBeInTheDocument()
-    
-    // Wait for the loading to complete and button text to update
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: /check backend health/i })).toBeInTheDocument()
+    await act(async () => {
+      render(<App />)
     })
+    
+    expect(screen.getByText('Create New Agent')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /create agent/i })).toBeInTheDocument()
   })
 
-  it('displays counter functionality', () => {
+  it('displays agents list section', async () => {
     // Mock a failing fetch to avoid loading state
     vi.mocked(globalThis.fetch).mockRejectedValue(new Error('Network error'))
-    render(<App />)
-    expect(screen.getByRole('button', { name: /count is 0/i })).toBeInTheDocument()
+    
+    await act(async () => {
+      render(<App />)
+    })
+    
+    expect(screen.getByText('Available Agents')).toBeInTheDocument()
+    expect(screen.getByText('No agents created yet.')).toBeInTheDocument()
   })
 })

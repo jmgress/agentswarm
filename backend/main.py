@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
-from .models import Agent
+from models import Agent
 
 app = FastAPI(title="AgentSwarm API", version="1.0.0")
 

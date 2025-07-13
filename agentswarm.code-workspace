@@ -1,0 +1,15 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "python.pythonPath": ".venv/bin/python",
+        "python.defaultInterpreterPath": ".venv/bin/python",
+        "python.venvPath": ".",
+        "python.venvFolders": [".venv"],
+        "python.terminal.activateEnvironment": true,
+        "python.terminal.activateEnvInCurrentTerminal": true
+    }
+}
