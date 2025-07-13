@@ -34,10 +34,26 @@ agentswarm/
    ```
 
 2. Create and activate a virtual environment:
+
+   **On macOS/Linux:**
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   python3 -m venv venv
+   source venv/bin/activate
    ```
+
+   **On Windows (Command Prompt):**
+   ```cmd
+   python -m venv venv
+   venv\Scripts\activate
+   ```
+
+   **On Windows (PowerShell):**
+   ```powershell
+   python -m venv venv
+   venv\Scripts\Activate.ps1
+   ```
+
+   You should see `(venv)` at the beginning of your command prompt when the virtual environment is active.
 
 3. Install Python dependencies:
    ```bash
