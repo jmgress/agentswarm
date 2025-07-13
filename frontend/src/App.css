@@ -40,3 +40,13 @@
 .read-the-docs {
   color: #888;
 }
+
+.agent-management {
+  margin: 40px 0;
+  text-align: left;
+}
+
+.message {
+  text-align: center;
+  font-weight: 500;
+}
