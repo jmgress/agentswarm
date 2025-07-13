@@ -1,84 +1,58 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import AgentForm from './components/AgentForm';
+import './App.css';
 
-interface HealthStatus {
-  status: string;
+interface Agent {
+  name: string;
+  type: string;
+  description: string;
+  mcp_connection: {
+    endpoint: string;
+    metadata?: object;
+  };
 }
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null)
-  const [healthError, setHealthError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [agents, setAgents] = useState<Agent[]>([]);
 
-  const checkBackendHealth = async () => {
-    setIsLoading(true)
-    setHealthError(null)
+  const fetchAgents = async () => {
     try {
-      const response = await fetch('http://localhost:8000/health')
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+      const response = await fetch('http://localhost:8000/agents');
+      if (response.ok) {
+        const data = await response.json();
+        setAgents(data);
       }
-      const data: HealthStatus = await response.json()
-      setHealthStatus(data)
     } catch (error) {
-      setHealthError(error instanceof Error ? error.message : 'Failed to connect to backend')
-    } finally {
-      setIsLoading(false)
+      console.error('Error fetching agents:', error);
     }
-  }
+  };
 
   useEffect(() => {
-    checkBackendHealth()
-  }, [])
+    fetchAgents();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>AgentSwarm - Frontend</h1>
-      
-      <div className="card">
-        <h2>Backend Health Status</h2>
-        <button onClick={checkBackendHealth} disabled={isLoading}>
-          {isLoading ? 'Checking...' : 'Check Backend Health'}
-        </button>
-        
-        {healthStatus && (
-          <div style={{ marginTop: '10px', padding: '10px', backgroundColor: '#d4edda', border: '1px solid #c3e6cb', borderRadius: '4px' }}>
-            ✅ Backend Status: <strong>{healthStatus.status}</strong>
-          </div>
-        )}
-        
-        {healthError && (
-          <div style={{ marginTop: '10px', padding: '10px', backgroundColor: '#f8d7da', border: '1px solid #f5c6cb', borderRadius: '4px' }}>
-            ❌ Error: {healthError}
-          </div>
+    <div className="App">
+      <h1>AgentSwarm</h1>
+      <AgentForm onAgentCreated={fetchAgents} />
+      <div className="agents-list">
+        <h2>Available Agents</h2>
+        {agents.length === 0 ? (
+          <p>No agents created yet.</p>
+        ) : (
+          <ul>
+            {agents.map((agent, index) => (
+              <li key={index}>
+                <strong>{agent.name}</strong> ({agent.type}) - {agent.description}
+                <br />
+                <small>MCP Endpoint: {agent.mcp_connection.endpoint}</small>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
-
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
