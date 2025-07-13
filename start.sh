@@ -15,13 +15,11 @@ if [ ! -d "node_modules" ]; then
 fi
 
 # Setup backend if needed
-if [ ! -d "backend/venv" ]; then
-    echo "🐍 Setting up backend virtual environment..."
-    cd backend
+if [ ! -d "venv" ]; then
+    echo "🐍 Setting up Python virtual environment..."
     python3 -m venv venv
     source venv/bin/activate
-    pip install -r requirements.txt
-    cd ..
+    pip install -r backend/requirements.txt
 fi
 
 # Setup frontend if needed

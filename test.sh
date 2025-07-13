@@ -11,20 +11,17 @@ fi
 
 # Setup backend testing if needed
 echo "🐍 Setting up backend tests..."
-cd backend
 if [ ! -d "venv" ]; then
     echo "Creating Python virtual environment..."
     python3 -m venv venv
 fi
 
 source venv/bin/activate
-pip install -r requirements.txt > /dev/null
+pip install -r backend/requirements.txt > /dev/null
 
 echo "Running backend tests..."
-python -m pytest tests/ -v
+python -m pytest backend/tests/ -v
 backend_result=$?
-
-cd ..
 
 # Setup frontend testing if needed  
 echo ""
