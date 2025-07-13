@@ -12,11 +12,13 @@ This is a full-stack application with a FastAPI backend and React frontend.
 git clone https://github.com/jmgress/agentswarm.git
 cd agentswarm
 
-# Start both backend and frontend (with automatic setup)
+# Start both backend and frontend (with automatic port management)
 npm start
 # or
 ./start.sh
 ```
+
+**✨ New Feature**: The start script now automatically checks for and shuts down any existing processes on ports 8000 (backend) and 5173 (frontend) before starting new services.
 
 ### Run Tests
 ```bash
@@ -33,13 +35,21 @@ npm run test:frontend
 ## Available Scripts
 
 ### Root Level Commands
-- `npm start` - Start both backend and frontend services concurrently
+- `npm start` - Start both services with automatic port management and cleanup
+- `npm run start:direct` - Start both services without port checking (legacy mode)
 - `npm test` - Run all tests (backend + frontend)
 - `npm run setup` - Install all dependencies for both services
-- `npm run start:backend` - Start only the backend server
-- `npm run start:frontend` - Start only the frontend server
+- `npm run start:backend` - Start only the backend server (with port 8000 check)
+- `npm run start:frontend` - Start only the frontend server (with port 5173 check)
 - `npm run test:backend` - Run only backend tests
 - `npm run test:frontend` - Run only frontend tests
+
+### Port Management
+The application uses intelligent port management:
+- **Backend**: Port 8000 (FastAPI server)
+- **Frontend**: Port 5173 (Vite dev server)
+- **Auto-cleanup**: Existing processes are gracefully terminated before starting
+- **Manual port check**: Use `./scripts/check-port.sh <port> <service_name>`
 
 ### Shell Scripts
 - `./start.sh` - Interactive startup with dependency checking and installation

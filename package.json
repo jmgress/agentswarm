@@ -4,14 +4,16 @@
   "description": "Generative AI system to build an agent swarm for task and problem solving",
   "private": true,
   "scripts": {
-    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
-    "start:backend": "bash -c 'python3 -m venv venv 2>/dev/null || true && source venv/bin/activate && pip install -r backend/requirements.txt > /dev/null && cd backend && python main.py'",
-    "start:frontend": "bash -c 'cd frontend && npm install > /dev/null && npm run dev'",
+    "start": "scripts/start-app.sh",
+    "start:direct": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:safe": "scripts/start-app.sh",
+    "start:backend": "bash -c 'scripts/check-port.sh 8000 \"FastAPI Backend\" && source .venv/bin/activate && cd backend && python main.py'",
+    "start:frontend": "bash -c 'scripts/check-port.sh 5173 \"Vite Frontend\" && cd frontend && npm install > /dev/null && npm run dev'",
     "setup": "npm run setup:backend && npm run setup:frontend",
-    "setup:backend": "bash -c 'python3 -m venv venv && source venv/bin/activate && pip install -r backend/requirements.txt'",
+    "setup:backend": "bash -c 'source .venv/bin/activate && pip install -r backend/requirements.txt'",
     "setup:frontend": "cd frontend && npm install",
     "test": "npm run test:backend && npm run test:frontend",
-    "test:backend": "bash -c '(test -d venv || (python3 -m venv venv && source venv/bin/activate && pip install -r backend/requirements.txt)) && source venv/bin/activate && python -m pytest backend/tests/ -v'",
+    "test:backend": "bash -c 'source .venv/bin/activate && python -m pytest backend/tests/ -v'",
     "test:frontend": "cd frontend && npm run test"
   },
   "devDependencies": {
