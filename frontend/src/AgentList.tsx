@@ -4,9 +4,11 @@ import './AgentList.css'
 interface AgentListProps {
   agents: Agent[]
   isLoading: boolean
+  selectedAgentIds: string[]
+  onToggleAgent: (id: string) => void
 }
 
-export function AgentList({ agents, isLoading }: AgentListProps) {
+export function AgentList({ agents, isLoading, selectedAgentIds, onToggleAgent }: AgentListProps) {
   if (isLoading) {
     return (
       <div className="agent-list-container">
@@ -28,6 +30,11 @@ export function AgentList({ agents, isLoading }: AgentListProps) {
           {agents.map((agent) => (
             <div key={agent.id} className="agent-card">
               <div className="agent-header">
+                <input
+                  type="checkbox"
+                  checked={selectedAgentIds.includes(agent.id)}
+                  onChange={() => onToggleAgent(agent.id)}
+                />
                 <h3>{agent.name}</h3>
                 <span className={`agent-type ${agent.agent_type}`}>
                   {agent.agent_type}
