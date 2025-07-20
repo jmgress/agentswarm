@@ -12,12 +12,11 @@ describe('App', () => {
   })
 
   it('renders without crashing', async () => {
-    // Mock both health and agents API calls
+    // Mock both chats and agents API calls
     vi.mocked(globalThis.fetch)
       .mockResolvedValueOnce({
-        ok: false,
-        json: async () => ({}),
-        status: 500
+        ok: true,
+        json: async () => []
       } as Response)
       .mockResolvedValueOnce({
         ok: true,
@@ -25,15 +24,16 @@ describe('App', () => {
       } as Response)
     
     render(<App />)
-    expect(screen.getByText('AgentSwarm - Agent Management')).toBeInTheDocument()
+    expect(screen.getByText('Chat History')).toBeInTheDocument()
+    expect(screen.getByText('Agents')).toBeInTheDocument()
   })
 
-  it('displays health check section', async () => {
-    // Mock successful health check and empty agents list
+  it('displays chat interface', async () => {
+    // Mock successful API calls
     vi.mocked(globalThis.fetch)
       .mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ status: 'ok' })
+        json: async () => []
       } as Response)
       .mockResolvedValueOnce({
         ok: true,
@@ -41,33 +41,35 @@ describe('App', () => {
       } as Response)
 
     render(<App />)
-    expect(screen.getByText('Backend Health Status')).toBeInTheDocument()
-    
-    // Wait for the health check to complete and button text to update
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: /check backend health/i })).toBeInTheDocument()
-    })
+    expect(screen.getByText('Chat History')).toBeInTheDocument()
+    expect(screen.getByText('+ New Chat')).toBeInTheDocument()
+    expect(screen.getByText('Welcome to AgentSwarm')).toBeInTheDocument()
   })
 
-  it('displays counter functionality', async () => {
-    // Mock failing health check and agents API
+  it('displays agent panel', async () => {
+    // Mock API calls
     vi.mocked(globalThis.fetch)
-      .mockRejectedValueOnce(new Error('Network error'))
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => []
+      } as Response)
       .mockResolvedValueOnce({
         ok: true,
         json: async () => []
       } as Response)
       
     render(<App />)
-    expect(screen.getByRole('button', { name: /count is 0/i })).toBeInTheDocument()
+    expect(screen.getByText('Agents')).toBeInTheDocument()
+    expect(screen.getByText('+')).toBeInTheDocument()
+    expect(screen.getByText('No agents enabled')).toBeInTheDocument()
   })
 
-  it('displays agent form', async () => {
-    // Mock API calls
+  it('displays empty states correctly', async () => {
+    // Mock empty responses
     vi.mocked(globalThis.fetch)
       .mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ status: 'ok' })
+        json: async () => []
       } as Response)
       .mockResolvedValueOnce({
         ok: true,
@@ -76,22 +78,18 @@ describe('App', () => {
 
     render(<App />)
     
-    // Check for agent form elements
     await waitFor(() => {
-      expect(screen.getByText('Create New Agent')).toBeInTheDocument()
-      expect(screen.getByLabelText(/agent name/i)).toBeInTheDocument()
-      expect(screen.getByLabelText(/agent type/i)).toBeInTheDocument()
-      expect(screen.getByLabelText(/description/i)).toBeInTheDocument()
-      expect(screen.getByLabelText(/mcp endpoint url/i)).toBeInTheDocument()
+      expect(screen.getByText('No chats yet. Start a new conversation!')).toBeInTheDocument()
+      expect(screen.getByText('No agents available.')).toBeInTheDocument()
     })
   })
 
-  it('displays agent list section', async () => {
+  it('displays input interface', async () => {
     // Mock API calls
     vi.mocked(globalThis.fetch)
       .mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ status: 'ok' })
+        json: async () => []
       } as Response)
       .mockResolvedValueOnce({
         ok: true,
@@ -101,8 +99,8 @@ describe('App', () => {
     render(<App />)
     
     await waitFor(() => {
-      expect(screen.getByText('Agents (0)')).toBeInTheDocument()
-      expect(screen.getByText('No agents created yet. Create your first agent using the form above.')).toBeInTheDocument()
+      expect(screen.getByPlaceholderText('Select agents from the panel to start chatting...')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: '→' })).toBeInTheDocument()
     })
   })
 })
