@@ -1,0 +1,201 @@
+.agent-panel {
+  padding: 1rem;
+}
+
+.agent-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.agent-panel-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #495057;
+}
+
+.add-agent-button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background-color: #28a745;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.add-agent-button:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+.agent-message {
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.agent-message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.agent-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.create-agent-section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  border: 1px solid #dee2e6;
+}
+
+.agents-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.loading, .empty-state {
+  text-align: center;
+  color: #6c757d;
+  padding: 2rem 1rem;
+  font-style: italic;
+}
+
+.agent-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.agent-item {
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  background-color: white;
+  transition: all 0.2s;
+}
+
+.agent-item:hover {
+  border-color: #adb5bd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.agent-checkbox-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.agent-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  flex: 1;
+}
+
+.agent-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.agent-name {
+  font-weight: 500;
+  color: #495057;
+  flex: 1;
+}
+
+.agent-type-badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.agent-type-badge.utility {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.agent-type-badge.task {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.agent-type-badge.orchestration {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.agent-description {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.agent-details {
+  font-size: 0.8rem;
+}
+
+.agent-endpoint {
+  color: #6c757d;
+}
+
+.endpoint-url {
+  font-family: monospace;
+  background-color: #f8f9fa;
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.2rem;
+  margin-left: 0.5rem;
+}
+
+.enabled-summary {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  border: 1px solid #dee2e6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-text {
+  font-size: 0.9rem;
+  color: #495057;
+}
+
+.clear-all-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clear-all-button:hover {
+  background-color: #c82333;
+}

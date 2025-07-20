@@ -21,9 +21,10 @@ export interface Agent extends AgentFormData {
 interface AgentFormProps {
   onSubmit: (agent: AgentFormData) => Promise<void>
   isLoading: boolean
+  compact?: boolean
 }
 
-export function AgentForm({ onSubmit, isLoading }: AgentFormProps) {
+export function AgentForm({ onSubmit, isLoading, compact = false }: AgentFormProps) {
   const [formData, setFormData] = useState<AgentFormData>({
     name: '',
     agent_type: 'utility',
@@ -82,8 +83,8 @@ export function AgentForm({ onSubmit, isLoading }: AgentFormProps) {
   }
 
   return (
-    <div className="agent-form-container">
-      <h2>Create New Agent</h2>
+    <div className={`agent-form-container ${compact ? 'compact' : ''}`}>
+      {!compact && <h2>Create New Agent</h2>}
       <form onSubmit={handleSubmit} className="agent-form">
         <div className="form-group">
           <label htmlFor="name">Agent Name *</label>
@@ -122,7 +123,7 @@ export function AgentForm({ onSubmit, isLoading }: AgentFormProps) {
             required
             disabled={isLoading}
             placeholder="Describe the agent's purpose and capabilities"
-            rows={3}
+            rows={compact ? 2 : 3}
           />
         </div>
 
@@ -139,18 +140,20 @@ export function AgentForm({ onSubmit, isLoading }: AgentFormProps) {
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="metadata">MCP Metadata (JSON, optional)</label>
-          <textarea
-            id="metadata"
-            value={metadataText}
-            onChange={(e) => setMetadataText(e.target.value)}
-            disabled={isLoading}
-            placeholder='{"version": "1.0", "protocol": "http"}'
-            rows={3}
-          />
-          <small>Enter valid JSON for additional MCP connection metadata</small>
-        </div>
+        {!compact && (
+          <div className="form-group">
+            <label htmlFor="metadata">MCP Metadata (JSON, optional)</label>
+            <textarea
+              id="metadata"
+              value={metadataText}
+              onChange={(e) => setMetadataText(e.target.value)}
+              disabled={isLoading}
+              placeholder='{"version": "1.0", "protocol": "http"}'
+              rows={3}
+            />
+            <small>Enter valid JSON for additional MCP connection metadata</small>
+          </div>
+        )}
 
         <button type="submit" disabled={isLoading} className="submit-button">
           {isLoading ? 'Creating Agent...' : 'Create Agent'}
