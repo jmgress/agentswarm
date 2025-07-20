@@ -1,25 +1,34 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
 import { AgentForm, type AgentFormData, type Agent } from './AgentForm'
 import { AgentList } from './AgentList'
+import { ChatList, ChatSummary } from './ChatList'
+import { ChatWindow, ChatMessage } from './ChatWindow'
 
 interface HealthStatus {
-  status: string;
+  status: string
+}
+
+interface Chat {
+  id: number
+  messages: ChatMessage[]
 }
 
 function App() {
-  const [count, setCount] = useState(0)
+  // Health check (retain existing logic)
   const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null)
   const [healthError, setHealthError] = useState<string | null>(null)
   const [isLoadingHealth, setIsLoadingHealth] = useState(false)
-  
-  // Agent-related state
+
+  // Agents
   const [agents, setAgents] = useState<Agent[]>([])
   const [isCreatingAgent, setIsCreatingAgent] = useState(false)
   const [isLoadingAgents, setIsLoadingAgents] = useState(false)
-  const [agentMessage, setAgentMessage] = useState<{type: 'success' | 'error', text: string} | null>(null)
+  const [selectedAgentIds, setSelectedAgentIds] = useState<string[]>([])
+
+  // Chats
+  const [chats, setChats] = useState<Chat[]>([{ id: 1, messages: [] }])
+  const [activeChatId, setActiveChatId] = useState(1)
 
   const checkBackendHealth = async () => {
     setIsLoadingHealth(true)
@@ -32,7 +41,9 @@ function App() {
       const data: HealthStatus = await response.json()
       setHealthStatus(data)
     } catch (error) {
-      setHealthError(error instanceof Error ? error.message : 'Failed to connect to backend')
+      setHealthError(
+        error instanceof Error ? error.message : 'Failed to connect to backend'
+      )
     } finally {
       setIsLoadingHealth(false)
     }
@@ -56,15 +67,13 @@ function App() {
 
   const createAgent = async (agentData: AgentFormData) => {
     setIsCreatingAgent(true)
-    setAgentMessage(null)
-    
     try {
       const response = await fetch('http://localhost:8000/agents', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(agentData),
+        body: JSON.stringify(agentData)
       })
 
       if (!response.ok) {
@@ -74,17 +83,40 @@ function App() {
 
       const newAgent: Agent = await response.json()
       setAgents(prev => [...prev, newAgent])
-      setAgentMessage({ type: 'success', text: `Agent "${newAgent.name}" created successfully!` })
-      
-      // Clear success message after 5 seconds
-      setTimeout(() => setAgentMessage(null), 5000)
-      
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to create agent'
-      setAgentMessage({ type: 'error', text: errorMessage })
+      console.error('Failed to create agent:', error)
     } finally {
       setIsCreatingAgent(false)
     }
+  }
+
+  const toggleAgent = (id: string) => {
+    setSelectedAgentIds(prev =>
+      prev.includes(id) ? prev.filter(a => a !== id) : [...prev, id]
+    )
+  }
+
+  const addChat = () => {
+    const newId = chats.length ? chats[chats.length - 1].id + 1 : 1
+    setChats([...chats, { id: newId, messages: [] }])
+    setActiveChatId(newId)
+  }
+
+  const sendMessage = (content: string) => {
+    setChats(prev =>
+      prev.map(chat =>
+        chat.id === activeChatId
+          ? {
+              ...chat,
+              messages: [
+                ...chat.messages,
+                { role: 'user', content },
+                { role: 'assistant', content: 'This is a placeholder response.' }
+              ]
+            }
+          : chat
+      )
+    )
   }
 
   useEffect(() => {
@@ -92,73 +124,42 @@ function App() {
     loadAgents()
   }, [])
 
+  const chatSummaries: ChatSummary[] = chats.map(c => ({
+    id: c.id,
+    title: `Chat ${c.id}`
+  }))
+  const activeMessages = chats.find(c => c.id === activeChatId)?.messages ?? []
+
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>AgentSwarm - Agent Management</h1>
-      
-      <div className="card">
-        <h2>Backend Health Status</h2>
-        <button onClick={checkBackendHealth} disabled={isLoadingHealth}>
-          {isLoadingHealth ? 'Checking...' : 'Check Backend Health'}
-        </button>
-        
-        {healthStatus && (
-          <div style={{ marginTop: '10px', padding: '10px', backgroundColor: '#d4edda', border: '1px solid #c3e6cb', borderRadius: '4px' }}>
-            ✅ Backend Status: <strong>{healthStatus.status}</strong>
-          </div>
-        )}
-        
-        {healthError && (
-          <div style={{ marginTop: '10px', padding: '10px', backgroundColor: '#f8d7da', border: '1px solid #f5c6cb', borderRadius: '4px' }}>
-            ❌ Error: {healthError}
-          </div>
-        )}
-      </div>
-
-      {/* Agent Management Section */}
-      <div className="agent-management">
-        {agentMessage && (
-          <div 
-            className={`message ${agentMessage.type}`}
-            style={{
-              margin: '20px auto',
-              padding: '10px',
-              maxWidth: '600px',
-              borderRadius: '4px',
-              backgroundColor: agentMessage.type === 'success' ? '#d4edda' : '#f8d7da',
-              border: `1px solid ${agentMessage.type === 'success' ? '#c3e6cb' : '#f5c6cb'}`,
-              color: agentMessage.type === 'success' ? '#155724' : '#721c24'
-            }}
-          >
-            {agentMessage.type === 'success' ? '✅' : '❌'} {agentMessage.text}
-          </div>
-        )}
-        
+    <div className="app-container">
+      <aside className="sidebar-left">
+        <ChatList
+          chats={chatSummaries}
+          activeChatId={activeChatId}
+          onSelect={setActiveChatId}
+          onAddChat={addChat}
+        />
+      </aside>
+      <main className="main-content">
+        <div className="health-section">
+          <button onClick={checkBackendHealth} disabled={isLoadingHealth}>
+            {isLoadingHealth ? 'Checking...' : 'Check Backend Health'}
+          </button>
+          {healthStatus && <div>Backend: {healthStatus.status}</div>}
+          {healthError && <div>Error: {healthError}</div>}
+        </div>
+        <ChatWindow messages={activeMessages} onSend={sendMessage} />
+      </main>
+      <aside className="agent-sidebar">
         <AgentForm onSubmit={createAgent} isLoading={isCreatingAgent} />
-        <AgentList agents={agents} isLoading={isLoadingAgents} />
-      </div>
-
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+        <AgentList
+          agents={agents}
+          isLoading={isLoadingAgents}
+          selectedAgentIds={selectedAgentIds}
+          onToggleAgent={toggleAgent}
+        />
+      </aside>
+    </div>
   )
 }
 

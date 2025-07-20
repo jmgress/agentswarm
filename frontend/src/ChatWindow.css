@@ -1,0 +1,33 @@
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.message {
+  margin-bottom: 0.5rem;
+}
+
+.message.user {
+  text-align: right;
+}
+
+.prompt-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.prompt-form input {
+  flex: 1;
+  padding: 0.5rem;
+}
+
+.prompt-form button {
+  padding: 0.5rem 1rem;
+}
