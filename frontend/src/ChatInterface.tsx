@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, type FormEvent } from 'react'
 import './ChatInterface.css'
 
 interface Chat {
@@ -38,7 +38,7 @@ export function ChatInterface({ chat, onSendMessage, enabledAgents }: ChatInterf
     scrollToBottom();
   }, [chat?.messages]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isSending) return;
 
