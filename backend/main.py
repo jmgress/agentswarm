@@ -2,6 +2,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from models import Agent, AgentCreate
+from providers.registry import provider_registry
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI(title="AgentSwarm API", version="1.0.0")
 
@@ -32,8 +36,11 @@ async def create_agent(agent_data: AgentCreate):
         raise HTTPException(status_code=400, detail="Agent with this name already exists")
     
     # Create new agent
-    new_agent = Agent.from_create(agent_data)
-    agents_storage.append(new_agent)
+    try:
+        new_agent = Agent.from_create(agent_data)
+        agents_storage.append(new_agent)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     
     return new_agent
 
@@ -42,6 +49,12 @@ async def create_agent(agent_data: AgentCreate):
 async def get_agents():
     """Get all agents"""
     return agents_storage
+
+
+@app.get("/providers", response_model=List[str])
+async def get_providers():
+    """Get all available providers"""
+    return provider_registry.list_providers()
 
 if __name__ == "__main__":
     import uvicorn

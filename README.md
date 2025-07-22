@@ -61,6 +61,13 @@ The application uses intelligent port management:
 agentswarm/
 ├── backend/          # FastAPI backend application
 │   ├── main.py       # Main FastAPI application with health endpoint
+│   ├── models.py     # Pydantic models for agents and providers
+│   ├── providers/    # AI provider implementations
+│   │   ├── base.py   # Base provider class
+│   │   ├── ollama.py # Ollama provider
+│   │   ├── openai.py # OpenAI provider
+│   │   ├── gemini.py # Gemini provider
+│   │   └── registry.py # Provider registry
 │   ├── requirements.txt # Python dependencies
 │   └── tests/        # Backend tests (pytest)
 ├── frontend/         # React frontend application
@@ -68,11 +75,32 @@ agentswarm/
 │   │   └── test/     # Frontend tests (vitest)
 │   ├── public/       # Static assets
 │   └── package.json  # Node.js dependencies
+├── .env.example      # Example environment variables file
 ├── package.json      # Root package.json with coordinated scripts
 ├── start.sh          # Enhanced startup script
 ├── test.sh           # Enhanced testing script
 └── README.md         # This file
 ```
+
+## Providers
+
+This application uses a provider-based architecture to connect to different AI models. The following providers are currently supported:
+
+- **Ollama**: For local model inference.
+- **OpenAI**: For GPT models.
+- **Gemini**: For Google's Gemini models.
+
+### Configuration
+
+To use a provider, you need to create a `.env` file from the `.env.example` file and fill in the required API keys.
+
+### Adding a New Provider
+
+To add a new provider, you need to:
+
+1. Create a new provider class in the `backend/providers` directory that inherits from `BaseProvider`.
+2. Implement the required methods in the new provider class.
+3. Register the new provider in the `ProviderRegistry` in `backend/providers/registry.py`.
 
 ## Prerequisites
 

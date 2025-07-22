@@ -4,10 +4,14 @@ from datetime import datetime
 import uuid
 
 
-class MCPConnectionInfo(BaseModel):
-    """Model for MCP connection information"""
-    endpoint_url: str
-    metadata: Optional[dict] = None
+from providers.base import BaseProvider
+from providers.registry import provider_registry
+
+
+class ProviderConfig(BaseModel):
+    """Model for provider configuration"""
+    name: str
+    settings: Optional[Dict[str, Any]] = {}
 
 
 class AgentCreate(BaseModel):
@@ -15,7 +19,7 @@ class AgentCreate(BaseModel):
     name: str
     agent_type: Literal["utility", "task", "orchestration"]
     description: str
-    mcp_connection: MCPConnectionInfo
+    provider_config: ProviderConfig
 
 
 class Agent(BaseModel):
@@ -24,17 +28,26 @@ class Agent(BaseModel):
     name: str
     agent_type: Literal["utility", "task", "orchestration"]
     description: str
-    mcp_connection: MCPConnectionInfo
+    provider_config: ProviderConfig
     created_at: datetime
-    
+    provider: Optional[BaseProvider] = None
+
+    class Config:
+        arbitrary_types_allowed = True
+
     @classmethod
     def from_create(cls, agent_data: AgentCreate) -> "Agent":
         """Create an Agent instance from AgentCreate data"""
-        return cls(
+        agent = cls(
             id=str(uuid.uuid4()),
             name=agent_data.name,
             agent_type=agent_data.agent_type,
             description=agent_data.description,
-            mcp_connection=agent_data.mcp_connection,
+            provider_config=agent_data.provider_config,
             created_at=datetime.utcnow()
         )
+        agent.provider = provider_registry.get_provider(
+            name=agent.provider_config.name,
+            **agent.provider_config.settings
+        )
+        return agent
