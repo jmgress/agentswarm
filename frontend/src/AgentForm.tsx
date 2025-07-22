@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 import './AgentForm.css'
 
 export interface MCPConnectionInfo {
@@ -6,16 +6,34 @@ export interface MCPConnectionInfo {
   metadata?: Record<string, unknown>
 }
 
+export interface ProviderConfig {
+  provider_id: string
+  provider_type: 'ollama' | 'openai' | 'gemini'
+  model: string
+  config?: Record<string, unknown>
+  fallback_providers?: string[]
+}
+
 export interface AgentFormData {
   name: string
   agent_type: 'utility' | 'task' | 'orchestration'
   description: string
   mcp_connection: MCPConnectionInfo
+  provider_config?: ProviderConfig
 }
 
 export interface Agent extends AgentFormData {
   id: string
   created_at: string
+}
+
+export interface Provider {
+  provider_id: string
+  provider_type: 'ollama' | 'openai' | 'gemini'
+  name: string
+  description: string
+  config: Record<string, unknown>
+  default_model: string | null
 }
 
 interface AgentFormProps {
@@ -35,6 +53,24 @@ export function AgentForm({ onSubmit, isLoading }: AgentFormProps) {
   })
 
   const [metadataText, setMetadataText] = useState('')
+  const [providers, setProviders] = useState<Provider[]>([])
+  const [showProviderConfig, setShowProviderConfig] = useState(false)
+  
+  // Load providers on component mount
+  useEffect(() => {
+    const loadProviders = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/providers')
+        if (response.ok) {
+          const data = await response.json()
+          setProviders(data.providers)
+        }
+      } catch (error) {
+        console.error('Failed to load providers:', error)
+      }
+    }
+    loadProviders()
+  }, [])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -50,7 +86,7 @@ export function AgentForm({ onSubmit, isLoading }: AgentFormProps) {
       }
     }
 
-    const agentData = {
+    const agentData: AgentFormData = {
       ...formData,
       mcp_connection: {
         endpoint_url: formData.mcp_connection.endpoint_url,
@@ -68,6 +104,7 @@ export function AgentForm({ onSubmit, isLoading }: AgentFormProps) {
       mcp_connection: { endpoint_url: '', metadata: {} }
     })
     setMetadataText('')
+    setShowProviderConfig(false)
   }
 
   const handleInputChange = (field: keyof AgentFormData, value: string) => {
@@ -79,6 +116,19 @@ export function AgentForm({ onSubmit, isLoading }: AgentFormProps) {
     } else {
       setFormData(prev => ({ ...prev, [field]: value }))
     }
+  }
+
+  const handleProviderConfigChange = (field: keyof ProviderConfig, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      provider_config: {
+        ...prev.provider_config,
+        provider_id: prev.provider_config?.provider_id || '',
+        provider_type: prev.provider_config?.provider_type || 'ollama',
+        model: prev.provider_config?.model || '',
+        [field]: value
+      } as ProviderConfig
+    }))
   }
 
   return (
@@ -151,6 +201,71 @@ export function AgentForm({ onSubmit, isLoading }: AgentFormProps) {
           />
           <small>Enter valid JSON for additional MCP connection metadata</small>
         </div>
+
+        <div className="form-group">
+          <label>
+            <input
+              type="checkbox"
+              checked={showProviderConfig}
+              onChange={(e) => setShowProviderConfig(e.target.checked)}
+              disabled={isLoading}
+            />
+            Configure AI Provider (optional)
+          </label>
+        </div>
+
+        {showProviderConfig && (
+          <div className="provider-config-section">
+            <h3>AI Provider Configuration</h3>
+            
+            <div className="form-group">
+              <label htmlFor="provider_id">Provider</label>
+              <select
+                id="provider_id"
+                value={formData.provider_config?.provider_id || ''}
+                onChange={(e) => handleProviderConfigChange('provider_id', e.target.value)}
+                disabled={isLoading}
+              >
+                <option value="">Select a provider</option>
+                {providers.map(provider => (
+                  <option key={provider.provider_id} value={provider.provider_id}>
+                    {provider.name} ({provider.provider_type})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {formData.provider_config?.provider_id && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="provider_model">Model</label>
+                  <input
+                    type="text"
+                    id="provider_model"
+                    value={formData.provider_config?.model || ''}
+                    onChange={(e) => handleProviderConfigChange('model', e.target.value)}
+                    disabled={isLoading}
+                    placeholder="e.g., llama2, gpt-3.5-turbo, gemini-pro"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="provider_type">Provider Type</label>
+                  <select
+                    id="provider_type"
+                    value={formData.provider_config?.provider_type || 'ollama'}
+                    onChange={(e) => handleProviderConfigChange('provider_type', e.target.value as ProviderConfig['provider_type'])}
+                    disabled={isLoading}
+                  >
+                    <option value="ollama">Ollama</option>
+                    <option value="openai">OpenAI</option>
+                    <option value="gemini">Gemini</option>
+                  </select>
+                </div>
+              </>
+            )}
+          </div>
+        )}
 
         <button type="submit" disabled={isLoading} className="submit-button">
           {isLoading ? 'Creating Agent...' : 'Create Agent'}

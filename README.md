@@ -178,6 +178,9 @@ npm run test:frontend
 - ✅ CORS enabled for frontend communication
 - ✅ Auto-generated API documentation
 - ✅ pytest test suite with health endpoint testing
+- ✅ **AI Provider Integration**: Unified interface for Ollama, OpenAI, and Gemini providers
+- ✅ **Provider Management**: Create, configure, and manage AI providers
+- ✅ **Agent-Provider Integration**: Assign AI providers to agents with fallback support
 
 ### Frontend
 - ✅ React application built with Vite and TypeScript
@@ -185,6 +188,16 @@ npm run test:frontend
 - ✅ Real-time status display
 - ✅ Error handling for backend connectivity issues
 - ✅ vitest test suite with component testing
+- ✅ **Provider Configuration**: UI for selecting and configuring AI providers for agents
+- ✅ **Enhanced Agent Creation**: Form includes optional AI provider selection
+
+### AI Provider Support
+- ✅ **Ollama Provider**: Local AI model inference
+- ✅ **OpenAI Provider**: GPT models with function calling support
+- ✅ **Gemini Provider**: Google's AI models with safety settings
+- ✅ **Provider Registry**: Pluggable provider system
+- ✅ **Health Monitoring**: Real-time provider status checks
+- ✅ **Model Discovery**: Dynamic model listing per provider
 
 ## Development
 
@@ -200,6 +213,58 @@ Both the backend and frontend can be run independently:
 - **GET** `/health`
   - Returns: `{"status": "ok"}`
   - Purpose: Verify backend is running and accessible
+
+### Agent Management
+- **POST** `/agents` - Create a new agent
+- **GET** `/agents` - List all agents
+
+### Provider Management
+- **GET** `/providers` - List all registered AI providers
+- **POST** `/providers` - Create a new provider instance
+- **DELETE** `/providers/{provider_id}` - Delete a provider
+- **GET** `/providers/{provider_id}/health` - Check provider health status
+- **GET** `/providers/{provider_id}/models` - Get available models
+- **POST** `/providers/{provider_id}/chat` - Chat with a specific provider
+- **GET** `/providers/health` - Check health of all providers
+
+### Provider Configuration
+
+AgentSwarm supports three AI providers out of the box:
+
+#### Ollama (Local AI)
+```json
+{
+  "provider_type": "ollama",
+  "config": {
+    "base_url": "http://localhost:11434",
+    "default_model": "llama2"
+  }
+}
+```
+
+#### OpenAI (GPT Models)
+```json
+{
+  "provider_type": "openai", 
+  "config": {
+    "api_key": "your-openai-api-key",
+    "default_model": "gpt-3.5-turbo"
+  }
+}
+```
+
+#### Gemini (Google AI)
+```json
+{
+  "provider_type": "gemini",
+  "config": {
+    "api_key": "your-gemini-api-key", 
+    "default_model": "gemini-pro"
+  }
+}
+```
+
+For detailed provider configuration, see [Provider Configuration Guide](docs/providers.md).
 
 ## Technology Stack
 
