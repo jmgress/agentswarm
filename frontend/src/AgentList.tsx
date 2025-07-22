@@ -43,6 +43,19 @@ export function AgentList({ agents, isLoading }: AgentListProps) {
                   </details>
                 )}
               </div>
+              
+              {agent.provider_config && (
+                <div className="agent-provider">
+                  <strong>AI Provider:</strong> {agent.provider_config.provider_id} ({agent.provider_config.provider_type})
+                  <br />
+                  <strong>Model:</strong> {agent.provider_config.model}
+                  {agent.provider_config.fallback_providers && agent.provider_config.fallback_providers.length > 0 && (
+                    <div className="fallback-providers">
+                      <strong>Fallback providers:</strong> {agent.provider_config.fallback_providers.join(', ')}
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="agent-created">
                 Created: {new Date(agent.created_at).toLocaleString()}
               </div>
